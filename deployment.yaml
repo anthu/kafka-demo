@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kafka-demo
+  name: kafka-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-demo
+  template:
+    metadata:
+      labels:
+        app: kafka-demo
+    spec:
+      containers:
+      - image: anhu/kafka-demo
+        name: kafka-demo
+        imagePullPolicy: Always
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: kubernetes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-demo
+spec:
+  selector:
+    app: kafka-demo
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mysterium-dvpn-node-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+    - host: demo.0b5fb6e4-76b3-4b41-b779-fcecaf520b31.k8s.civo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kafka-demo
+                port:
+                  number: 8080
