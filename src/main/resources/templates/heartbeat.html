@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Heartbeat</title>
+</head>
+<body>
+<p th:text="'Last Heartbeats at'"/>
+<li th:each="heartbeat : ${heartbeats}" > <span th:text="${heartbeat}"> Heartbeat </span> </li>
+</body>
+</html>
