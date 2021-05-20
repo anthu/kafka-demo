@@ -5,7 +5,8 @@ Simple Kafka Demo demonstrating implementing Kafka Producer and Consumer with we
 ![docs/arch.png](docs/arch.png)
 
 # Configuration
-Configuration is done using Spring Boot Autoconfig. See `src/main/application.properties` and `HELP.md`
+Configuration is done using Spring Boot Autoconfig. See `src/main/resources/application.properties` and `HELP.md`
+
 # Runnning
 ```
 ./gradlew bootRun
