@@ -7,6 +7,7 @@ import io.opentelemetry.api.trace.Tracer;
 import org.apache.kafka.clients.consumer.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.kafka.common.TopicPartition;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,9 @@ public class HelloWorldController {
 
         @Autowired
         private KafkaTemplate<String, String> template;
+
+        @Value("${spring.kafka.bootstrap-servers:'localhost:9092'}")
+        private String bootstrapServer;
 
         Tracer tracer = GlobalOpenTelemetry.getTracer("KafkaTracer");
 
@@ -78,7 +82,8 @@ public class HelloWorldController {
 
         private Properties getConsumerProperties() {
                 Properties props = new Properties();
-                props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+
+                props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.bootstrapServer);
                 props.put(ConsumerConfig.GROUP_ID_CONFIG, "heartbeat");
                 props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, org.apache.kafka.common.serialization.StringDeserializer.class);
                 props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, org.apache.kafka.common.serialization.StringDeserializer.class);
