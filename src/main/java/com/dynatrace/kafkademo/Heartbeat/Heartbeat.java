@@ -31,7 +31,7 @@ public class Heartbeat {
     }
 
     @Scheduled(fixedRate = 5000)
-    public void heartbeatSchdule() {
+    public void heartbeatSchedule() {
         Span span = tracer.spanBuilder("runnerSpan").startSpan();
         String timestamp = (new Date()).toString();
         span.setAttribute("timestamp", timestamp);
