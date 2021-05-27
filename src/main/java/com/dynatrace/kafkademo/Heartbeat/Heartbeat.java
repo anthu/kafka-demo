@@ -17,7 +17,8 @@ import java.util.Date;
 
 @Component
 public class Heartbeat {
-    Tracer tracer = GlobalOpenTelemetry.getTracer("HeartbeatTracer");
+    private static final String INSTRUMENTATION_NAME = Heartbeat.class.getName();
+    private final Tracer tracer = GlobalOpenTelemetry.getTracer(INSTRUMENTATION_NAME);
 
     @Autowired
     KafkaTemplate<String, String> template;
@@ -32,11 +33,13 @@ public class Heartbeat {
 
     @Scheduled(fixedRate = 5000)
     public void heartbeatSchedule() {
-        Span span = tracer.spanBuilder("runnerSpan").startSpan();
         String timestamp = (new Date()).toString();
-        span.setAttribute("timestamp", timestamp);
+        Span span =
+                tracer
+                    .spanBuilder("pushing Heartbeat")
+                    .startSpan();
+
         template.send(Constants.HEARTBEAT_TOPIC, timestamp);
-        span.addEvent("timestampSent");
         span.end();
     }
 

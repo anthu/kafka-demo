@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ConsoleConsumer {
-    Tracer tracer = GlobalOpenTelemetry.getTracer("ConsoleTracer");
+    private static final String INSTRUMENTATION_NAME = ConsoleConsumer.class.getName();
+    private final Tracer tracer = GlobalOpenTelemetry.getTracer(INSTRUMENTATION_NAME);
 
     public static final String KAFKA_CONSUMER_ID = "console-consumer";
     private static final int PRINT_DELAY_IN_MS = 1000;
@@ -18,7 +19,7 @@ public class ConsoleConsumer {
     @KafkaListener(id = KAFKA_CONSUMER_ID, topics = {Constants.HEARTBEAT_TOPIC, Constants.VISITORS_TOPIC})
     public void consoleListener(ConsumerRecord<String, String> in) {
         Span span = tracer
-                .spanBuilder("listenerSpan")
+                .spanBuilder("consoleListenerSpan")
                 .setAttribute("topic", in.topic())
                 .setAttribute("type", "String")
                 .startSpan();
